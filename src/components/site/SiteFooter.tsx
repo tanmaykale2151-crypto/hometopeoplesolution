@@ -33,8 +33,9 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-ink-foreground/10">
-        <div className="container-page py-5 text-xs text-ink-foreground/55">
-          © {new Date().getFullYear()} HTPS – Home To People Solution · Pune, Maharashtra
+        <div className="container-page flex flex-col gap-1 py-5 text-xs text-ink-foreground/55 sm:flex-row sm:items-center sm:justify-between">
+          <span>© {new Date().getFullYear()} HTPS – Home To People Solution · Pune, Maharashtra</span>
+          <span>Created by Hind Magdum, Tanmay Kale, Prasad Deokule, Sudarshan Fartade</span>
         </div>
       </div>
     </footer>
