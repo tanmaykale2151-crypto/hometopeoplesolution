@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Public listing reads go through `src/lib/properties.functions.ts` server functions with a publishable client; owner writes (insert/update/delete, photo upload) use the browser client under RLS. Why: SSR-friendly public pages, owner-only writes enforced by policies.
+- Property photos live in the private `property-images` bucket under `<userId>/...` and are shown via signed URLs rewritten to the browser-facing URL; paths starting with `/` are bundled demo photos. Why: workspace blocks public buckets.
+- Wrap Radix Select `onValueChange` handlers with a non-empty guard (`v && set(v)`). Why: Radix can emit "" and silently blank saved values.

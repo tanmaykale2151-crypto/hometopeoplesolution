@@ -96,7 +96,7 @@ function PropertiesPage() {
             })}
           </div>
 
-          <Select value={search.locality ?? "all"} onValueChange={(v) => update({ locality: v })}>
+          <Select value={search.locality ?? "all"} onValueChange={(v) => v && update({ locality: v })}>
             <SelectTrigger className="h-9 w-[170px] rounded-full bg-card" aria-label="Area">
               <SelectValue />
             </SelectTrigger>
@@ -108,7 +108,7 @@ function PropertiesPage() {
             </SelectContent>
           </Select>
 
-          <Select value={search.maxRent ? String(search.maxRent) : "all"} onValueChange={(v) => update({ maxRent: v === "all" ? undefined : Number(v) })}>
+          <Select value={search.maxRent ? String(search.maxRent) : "all"} onValueChange={(v) => v && update({ maxRent: v === "all" ? undefined : Number(v) })}>
             <SelectTrigger className="h-9 w-[160px] rounded-full bg-card" aria-label="Budget">
               <SelectValue />
             </SelectTrigger>
@@ -121,7 +121,7 @@ function PropertiesPage() {
           </Select>
 
           {search.type !== "flat" && (
-            <Select value={search.gender ?? "all"} onValueChange={(v) => update({ gender: v })}>
+            <Select value={search.gender ?? "all"} onValueChange={(v) => v && update({ gender: v })}>
               <SelectTrigger className="h-9 w-[140px] rounded-full bg-card" aria-label="PG for">
                 <SelectValue />
               </SelectTrigger>

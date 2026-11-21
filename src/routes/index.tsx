@@ -118,7 +118,7 @@ function Hero() {
               </button>
             ))}
           </div>
-          <Select value={locality} onValueChange={setLocality}>
+          <Select value={locality} onValueChange={(v) => v && setLocality(v)}>
             <SelectTrigger className="h-12 border-0 bg-transparent text-base shadow-none focus:ring-0" aria-label="Area">
               <MapPin className="size-4 text-primary" />
               <SelectValue placeholder="Choose an area" />

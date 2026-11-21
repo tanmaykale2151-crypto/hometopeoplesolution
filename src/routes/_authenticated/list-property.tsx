@@ -175,7 +175,7 @@ function ListPropertyPage() {
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="grid gap-1.5">
               <Label>Area in Pune</Label>
-              <Select value={locality} onValueChange={setLocality}>
+              <Select value={locality} onValueChange={(v) => v && setLocality(v)}>
                 <SelectTrigger><SelectValue placeholder="Choose area" /></SelectTrigger>
                 <SelectContent>
                   {PUNE_LOCALITIES.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
@@ -202,7 +202,7 @@ function ListPropertyPage() {
             {type === "flat" ? (
               <div className="grid gap-1.5">
                 <Label>Size</Label>
-                <Select value={bhk} onValueChange={setBhk}>
+                <Select value={bhk} onValueChange={(v) => v && setBhk(v)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>{BHK_OPTIONS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
                 </Select>
@@ -210,7 +210,7 @@ function ListPropertyPage() {
             ) : (
               <div className="grid gap-1.5">
                 <Label>Sharing</Label>
-                <Select value={sharing} onValueChange={setSharing}>
+                <Select value={sharing} onValueChange={(v) => v && setSharing(v)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>{SHARING_OPTIONS.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
                 </Select>
@@ -218,7 +218,7 @@ function ListPropertyPage() {
             )}
             <div className="grid gap-1.5">
               <Label>{type === "pg" ? "PG for" : "Preferred tenants"}</Label>
-              <Select value={gender} onValueChange={(v) => setGender(v as Gender)}>
+              <Select value={gender} onValueChange={(v) => v && setGender(v as Gender)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="any">Anyone</SelectItem>
@@ -229,7 +229,7 @@ function ListPropertyPage() {
             </div>
             <div className="grid gap-1.5">
               <Label>Furnishing</Label>
-              <Select value={furnishing} onValueChange={(v) => setFurnishing(v as Furnishing)}>
+              <Select value={furnishing} onValueChange={(v) => v && setFurnishing(v as Furnishing)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {(Object.keys(FURNISHING_LABEL) as Furnishing[]).map((k) => (
