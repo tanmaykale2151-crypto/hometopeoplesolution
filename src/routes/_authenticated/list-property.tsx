@@ -129,8 +129,9 @@ function ListPropertyPage() {
       if (error) throw new Error(error.message);
 
       await queryClient.invalidateQueries({ queryKey: ["properties"] });
-      toast.success("Your property is live!");
-      void navigate({ to: "/properties/$id", params: { id: data.id } });
+      void data;
+      toast.success("Submitted! Your property will be shown to others after our team verifies it.");
+      void navigate({ to: "/my-properties" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
       setSaving(false);
@@ -142,7 +143,7 @@ function ListPropertyPage() {
   return (
     <div className="container-page max-w-3xl pt-10">
       <h1 className="text-4xl font-extrabold md:text-5xl">List your property</h1>
-      <p className="mt-2 text-muted-foreground">It's free and goes live as soon as you post it.</p>
+      <p className="mt-2 text-muted-foreground">It's free. Our team verifies every listing before it's shown to tenants.</p>
 
       <form onSubmit={submit} className="mt-8 grid gap-6">
         <Section title="What are you renting out?">

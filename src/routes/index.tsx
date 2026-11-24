@@ -201,7 +201,7 @@ function OwnerCta() {
             <Button asChild variant="hero" size="xl" className="rounded-full">
               <Link to="/list-property"><Camera /> List your property — free</Link>
             </Button>
-            <p className="text-sm text-primary-foreground/75">Goes live instantly.</p>
+            <p className="text-sm text-primary-foreground/75">Verified by our team before it goes live.</p>
           </div>
         </div>
       </div>

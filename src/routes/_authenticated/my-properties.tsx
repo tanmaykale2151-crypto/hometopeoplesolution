@@ -18,7 +18,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { myPropertiesQuery } from "@/lib/property-queries";
-import { IMAGE_BUCKET, formatRupees, isStoragePath, propertySubtitle, type Property } from "@/lib/properties";
+import {
+  IMAGE_BUCKET,
+  STATUS_LABEL,
+  formatRupees,
+  isPubliclyVisible,
+  isStoragePath,
+  propertySubtitle,
+  type ListingStatus,
+  type Property,
+} from "@/lib/properties";
 
 export const Route = createFileRoute("/_authenticated/my-properties")({
   head: () => ({
@@ -43,7 +52,7 @@ function MyPropertiesPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl font-extrabold md:text-5xl">My listings</h1>
-          <p className="mt-2 text-muted-foreground">Turn a listing off once it's rented — you can switch it back on any time.</p>
+          <p className="mt-2 text-muted-foreground">New listings are shown to tenants after our team verifies them. Turn a listing off once it's rented.</p>
         </div>
         <Button asChild className="rounded-full">
           <Link to="/list-property"><Plus /> Add a property</Link>
@@ -78,7 +87,7 @@ function MyPropertyRow({ property }: { property: Property }) {
     const { error } = await supabase.from("properties").update({ is_available: available }).eq("id", property.id);
     setBusy(false);
     if (error) { toast.error(error.message); return; }
-    toast.success(available ? "Listing is visible again" : "Marked as rented — hidden from search");
+    toast.success(available ? "Marked as available" : "Marked as rented — hidden from search");
     await refresh();
   };
 
@@ -87,7 +96,8 @@ function MyPropertyRow({ property }: { property: Property }) {
     const { error } = await supabase.from("properties").delete().eq("id", property.id);
     if (error) {
       setBusy(false);
-      { toast.error(error.message); return; }
+      toast.error(error.message);
+      return;
     }
     const stored = property.images.filter(isStoragePath);
     if (stored.length) await supabase.storage.from(IMAGE_BUCKET).remove(stored);
@@ -110,13 +120,17 @@ function MyPropertyRow({ property }: { property: Property }) {
         </p>
         <h2 className="mt-1 truncate text-lg font-bold">{property.title}</h2>
         <p className="font-display text-lg font-extrabold">{formatRupees(property.rent)}<span className="text-sm font-normal text-muted-foreground"> /month</span></p>
+        <StatusBadge status={property.status as ListingStatus} />
+        {property.status === "rejected" && property.review_note && (
+          <p className="mt-1 text-sm text-destructive">Reason: {property.review_note}</p>
+        )}
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <label className="flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm font-semibold">
           <Switch checked={property.is_available} disabled={busy} onCheckedChange={toggle} />
-          {property.is_available ? "Live" : "Rented out"}
+          {property.is_available ? "Available" : "Rented out"}
         </label>
-        {property.is_available && (
+        {isPubliclyVisible(property) && (
           <Button asChild variant="outline" size="sm" className="rounded-full">
             <Link to="/properties/$id" params={{ id: property.id }}><Eye /> View</Link>
           </Button>
@@ -141,4 +155,14 @@ function MyPropertyRow({ property }: { property: Property }) {
       </div>
     </li>
   );
+}
+
+function StatusBadge({ status }: { status: ListingStatus }) {
+  const tone =
+    status === "approved"
+      ? "bg-primary/10 text-primary"
+      : status === "rejected"
+        ? "bg-destructive/10 text-destructive"
+        : "bg-accent/20 text-accent-foreground";
+  return <span className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-bold ${tone}`}>{STATUS_LABEL[status]}</span>;
 }

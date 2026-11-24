@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getProperty, listMyProperties, listProperties, type PropertyFilters } from "./properties.functions";
+import { getProperty, listListingsForReview, listMyProperties, listProperties, type PropertyFilters } from "./properties.functions";
 
 export const propertiesQuery = (filters: PropertyFilters) =>
   queryOptions({
@@ -19,4 +19,10 @@ export const myPropertiesQuery = () =>
   queryOptions({
     queryKey: ["properties", "mine"],
     queryFn: () => listMyProperties(),
+  });
+
+export const reviewQueueQuery = () =>
+  queryOptions({
+    queryKey: ["properties", "review"],
+    queryFn: () => listListingsForReview(),
   });

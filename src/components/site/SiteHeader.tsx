@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, Menu, Plus, User as UserIcon } from "lucide-react";
+import { LogOut, Menu, Plus, ShieldCheck, User as UserIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { Logo } from "./Logo";
 
 const navLinkClass =
@@ -21,6 +22,7 @@ const activeClass = "bg-secondary text-foreground";
 
 export function SiteHeader() {
   const { user } = useAuth();
+  const isAdmin = useIsAdmin();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
@@ -62,6 +64,11 @@ export function SiteHeader() {
                 <DropdownMenuItem asChild>
                   <Link to="/my-properties">My listings</Link>
                 </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin"><ShieldCheck /> Verify listings</Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={signOut}>
                   <LogOut /> Sign out
                 </DropdownMenuItem>
@@ -94,6 +101,7 @@ export function SiteHeader() {
               {user ? (
                 <>
                   <Link to="/my-properties" className={navLinkClass}>My listings</Link>
+                  {isAdmin && <Link to="/admin" className={navLinkClass}>Verify listings</Link>}
                   <button onClick={signOut} className={`${navLinkClass} text-left`}>Sign out</button>
                 </>
               ) : (

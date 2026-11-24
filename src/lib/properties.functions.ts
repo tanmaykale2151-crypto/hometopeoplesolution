@@ -62,6 +62,7 @@ export const listProperties = createServerFn({ method: "GET" })
       .from("properties")
       .select("*")
       .eq("is_available", true)
+      .eq("status", "approved")
       .order("created_at", { ascending: false })
       .limit(Math.min(data.limit ?? 60, 100));
     if (data.type) query = query.eq("listing_type", data.type);
@@ -83,6 +84,7 @@ export const getProperty = createServerFn({ method: "GET" })
       .select("*")
       .eq("id", data.id)
       .eq("is_available", true)
+      .eq("status", "approved")
       .maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) return null;
@@ -100,4 +102,24 @@ export const listMyProperties = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return withImageUrls(context.supabase as unknown as SupabaseClient<Database>, rows ?? []);
+  });
+
+/** Review queue for admins: every listing, newest first. Non-admins get `allowed: false`. */
+export const listListingsForReview = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (roleError) throw new Error(roleError.message);
+    if (!isAdmin) return { allowed: false as const, properties: [] as Property[] };
+    const { data: rows, error } = await context.supabase
+      .from("properties")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(300);
+    if (error) throw new Error(error.message);
+    const properties = await withImageUrls(context.supabase as unknown as SupabaseClient<Database>, rows ?? []);
+    return { allowed: true as const, properties };
   });

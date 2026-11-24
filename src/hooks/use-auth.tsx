@@ -19,7 +19,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       void router.invalidate();
       if (event !== "SIGNED_OUT") void queryClient.invalidateQueries();
-      else queryClient.removeQueries({ queryKey: ["properties", "mine"] });
+      else {
+        queryClient.removeQueries({ queryKey: ["properties", "mine"] });
+        queryClient.removeQueries({ queryKey: ["properties", "review"] });
+        queryClient.removeQueries({ queryKey: ["me"] });
+      }
     });
     void supabase.auth.getSession().then(({ data }) => {
       setState({ user: data.session?.user ?? null, loading: false });

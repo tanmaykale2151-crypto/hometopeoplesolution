@@ -5,6 +5,18 @@ export type Property = PropertyRow & { imageUrls: string[] };
 export type ListingType = "pg" | "flat";
 export type Gender = "boys" | "girls" | "any";
 export type Furnishing = "furnished" | "semi" | "unfurnished";
+export type ListingStatus = "pending" | "approved" | "rejected";
+
+export const STATUS_LABEL: Record<ListingStatus, string> = {
+  pending: "Waiting for verification",
+  approved: "Approved",
+  rejected: "Not approved",
+};
+
+/** A listing shows up for other users only after an admin approves it and while the owner keeps it available. */
+export function isPubliclyVisible(p: Pick<PropertyRow, "status" | "is_available">): boolean {
+  return p.status === "approved" && p.is_available;
+}
 
 export const IMAGE_BUCKET = "property-images";
 
